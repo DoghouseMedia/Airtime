@@ -444,9 +444,13 @@ class ScheduleController extends Zend_Controller_Action
                     'add_show_description' => $show->getDescription()));
 
         $formWhen->populate(array('add_show_start_date' => $show->getStartDate(),
-                                  'add_show_start_time' => Show::removeSecondsFromTime($show->getStartTime()),
+                                  'add_show_start_time' => DateHelper::removeSecondsFromTime($show->getStartTime()),
                                   'add_show_duration' => $show->getDuration(),
                                   'add_show_repeats' => $show->isRepeating() ? 1 : 0));
+
+        if ($show->isStartDateTimeInPast()){
+            $formWhen->getElement('add_show_start_date')->setOptions(array('disabled' => true));
+        }
 
         $days = array();
         $showDays = CcShowDaysQuery::create()->filterByDbShowId($showInstance->getShowId())->find();
@@ -470,7 +474,7 @@ class ScheduleController extends Zend_Controller_Action
         $i = 1;
         foreach ($rebroadcastsRelative as $rebroadcast){
             $rebroadcastFormValues["add_show_rebroadcast_date_$i"] = $rebroadcast['day_offset'];
-            $rebroadcastFormValues["add_show_rebroadcast_time_$i"] = Show::removeSecondsFromTime($rebroadcast['start_time']);
+            $rebroadcastFormValues["add_show_rebroadcast_time_$i"] = DateHelper::removeSecondsFromTime($rebroadcast['start_time']);
             $i++;
         }
         $formRebroadcast->populate($rebroadcastFormValues); 
@@ -480,7 +484,7 @@ class ScheduleController extends Zend_Controller_Action
         $i = 1;
         foreach ($rebroadcastsAbsolute as $rebroadcast){
             $rebroadcastAbsoluteFormValues["add_show_rebroadcast_date_absolute_$i"] = $rebroadcast['start_date'];
-            $rebroadcastAbsoluteFormValues["add_show_rebroadcast_time_absolute_$i"] = Show::removeSecondsFromTime($rebroadcast['start_time']);
+            $rebroadcastAbsoluteFormValues["add_show_rebroadcast_time_absolute_$i"] = DateHelper::removeSecondsFromTime($rebroadcast['start_time']);
             $i++;
         }
         $formAbsoluteRebroadcast->populate($rebroadcastAbsoluteFormValues);
@@ -541,6 +545,15 @@ class ScheduleController extends Zend_Controller_Action
         foreach($js as $j){
             $data[$j["name"]] = $j["value"];
         }
+
+        $startDateModified = true;
+        if ($data['add_show_id'] != -1 && !array_key_exists('add_show_start_date', $data)){
+            //show is being updated and changing the start date was disabled, since the
+            //array key does not exist. We need to repopulate this entry from the db.
+            $show = new Show($data['add_show_id']);
+            $data['add_show_start_date'] = $show->getStartDate();
+            $startDateModified = false;
+        }
      
         $data['add_show_hosts'] =  $this->_getParam('hosts');
         $data['add_show_day_check'] =  $this->_getParam('days');
@@ -580,7 +593,7 @@ class ScheduleController extends Zend_Controller_Action
 		$what = $formWhat->isValid($data);
 		$when = $formWhen->isValid($data);
         if($when) {
-            $when = $formWhen->checkReliantFields($data);
+            $when = $formWhen->checkReliantFields($data, $startDateModified);
         }
 
         if($data["add_show_repeats"]) {
@@ -630,7 +643,6 @@ class ScheduleController extends Zend_Controller_Action
         //update this option.
         $record = false;
         if ($data['add_show_id'] != -1){
-            $show = new Show($data['add_show_id']);
             $data['add_show_record'] = $show->isRecorded();
             $record = $formRecord->isValid($data);  
             $formRecord->getElement('add_show_record')->setOptions(array('disabled' => true));

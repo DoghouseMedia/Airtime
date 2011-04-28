@@ -60,7 +60,7 @@ class Application_Form_AddShowAbsoluteRebroadcastDates extends Zend_Form_SubForm
                 continue;
             }
 
-            $show_start_time = $formData['add_show_start_date']."".$formData['add_show_start_time'];
+            $show_start_time = $formData['add_show_start_date']." ".$formData['add_show_start_time'];
             $show_end = new DateTime($show_start_time);
 
             $duration = $formData['add_show_duration'];
@@ -70,7 +70,7 @@ class Application_Form_AddShowAbsoluteRebroadcastDates extends Zend_Form_SubForm
             $show_end->add(new DateInterval("PT$duration[1]M"));
             $show_end->add(new DateInterval("PT1H"));//min time to wait until a rebroadcast
 
-            $rebroad_start = $day."".$formData['add_show_rebroadcast_time_absolute_'.$i];
+            $rebroad_start = $day." ".$formData['add_show_rebroadcast_time_absolute_'.$i];
             $rebroad_start = new DateTime($rebroad_start);
 
             if($rebroad_start < $show_end) {
