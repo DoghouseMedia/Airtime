@@ -682,6 +682,10 @@ class ScheduleController extends Zend_Controller_Action
             if ($data['add_show_id'] != -1){
                 $this->view->addNewShow = false;
             }
+            if (!$startDateModified){
+                $formWhen->getElement('add_show_start_date')->setOptions(array('disabled' => true));
+            }
+                
 
             $this->view->form = $this->view->render('schedule/add-show-form.phtml');
         }
