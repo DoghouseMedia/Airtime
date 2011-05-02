@@ -183,7 +183,7 @@ class AirtimeIni
         for ($i=0; $i<$n; $i++) {
             if (!in_array(substr($lines[$i], 0, 1). array('#', ''))){
                 $info = explode("=", $lines[$i]);
-                $values[trim(info[0]) = trim(info[1]);
+                $values[trim($info[0])] = trim($info[1]);
             }
         }
 
