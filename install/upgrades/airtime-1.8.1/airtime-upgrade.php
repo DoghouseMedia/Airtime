@@ -52,11 +52,11 @@ foreach ($configFiles as $conf) {
         $settings = array_keys($newSettings);
 
         foreach($settings as $section) {
-            if(isset($oldSettings[$section]) {
+            if(isset($oldSettings[$section])) {
                 if(is_array($oldSettings[$section])) {
                     $sectionKeys = array_keys($newSettings[$section]);
                     foreach($sectionKeys as $sectionKey) {
-                        if(isset($oldSettings[$section][$sectionKey]) {
+                        if(isset($oldSettings[$section][$sectionKey])) {
                             AirtimeIni::UpdateIniValue($conf, $sectionKey, $oldSettings[$section][$sectionKey]);
                         }
                     }
