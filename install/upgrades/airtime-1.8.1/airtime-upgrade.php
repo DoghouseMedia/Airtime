@@ -32,8 +32,7 @@ echo "* Creating INI files".PHP_EOL;
 AirtimeIni::CreateIniFiles();
 echo "* Initializing INI files".PHP_EOL;
 AirtimeIni::MergeConfigFiles($configFiles, $suffix);
+Config::reload_config();
 
 AirtimeInstall::InstallPhpCode();
 AirtimeInstall::InstallBinaries();
-
-Config::reload_config();
