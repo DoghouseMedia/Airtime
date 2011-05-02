@@ -1,0 +1,72 @@
+<?php
+/**
+ * @package Airtime
+ * @copyright 2010 Sourcefabric O.P.S.
+ * @license http://www.gnu.org/licenses/gpl.txt
+ */
+
+set_include_path(__DIR__.'/../../../airtime_mvc/library' . PATH_SEPARATOR . get_include_path());
+require_once __DIR__.'/../../../airtime_mvc/application/configs/conf.php';
+require_once(dirname(__FILE__).'/../../include/AirtimeInstall.php');
+require_once(dirname(__FILE__).'/../../include/AirtimeIni.php');
+
+const CONF_FILE_AIRTIME = "/etc/airtime/airtime.conf";
+const CONF_FILE_PYPO = "/etc/airtime/pypo.cfg";
+const CONF_FILE_RECORDER = "/etc/airtime/recorder.cfg";
+const CONF_FILE_LIQUIDSOAP = "/etc/airtime/liquidsoap.cfg";
+
+$configFiles = array(CONF_FILE_AIRTIME,
+                     CONF_FILE_PYPO,
+                     CONF_FILE_RECORDER,
+                     CONF_FILE_LIQUIDSOAP);
+
+$suffix = date("Ymdhis");
+foreach ($configFiles as $conf) {
+    if (file_exists($conf)) {
+        echo "Backing up $conf to $conf$suffix.bak".PHP_EOL;
+        exec("cp $conf $conf$suffix.bak");
+    }
+}
+
+echo "* Creating INI files".PHP_EOL;
+AirtimeIni::CreateIniFiles();
+
+AirtimeInstall::InstallPhpCode();
+AirtimeInstall::InstallBinaries();
+
+echo "* Initializing INI files".PHP_EOL;
+
+foreach ($configFiles as $conf) {
+    if (file_exists("$conf$suffix.bak")) {
+
+        if($conf === CONF_FILE_AIRTIME) {
+            // Parse with sections
+            $newSettings = parse_ini_file($conf, true);
+            $oldSettings = parse_ini_file("$conf$suffix.bak", true);
+        }
+        else {
+            $newSettings = AirtimeIni::ReadPythonConfig($conf);
+            $oldSettings = AirtimeIni::ReadPythonConfig("$conf$suffix.bak");
+        }
+
+        $settings = array_keys($newSettings);
+
+        foreach($settings as $section) {
+            if(isset($oldSettings[$section]) {
+                if(is_array($oldSettings[$section])) {
+                    $sectionKeys = array_keys($newSettings[$section]);
+                    foreach($sectionKeys as $sectionKey) {
+                        if(isset($oldSettings[$section][$sectionKey]) {
+                            AirtimeIni::UpdateIniValue($conf, $sectionKey, $oldSettings[$section][$sectionKey]);
+                        }
+                    }
+                }
+                else {
+                    AirtimeIni::UpdateIniValue($conf, $section, $oldSettings[$section]);
+                }
+            }
+        }
+    }
+}
+
+Config::reload_config();
