@@ -30,43 +30,10 @@ foreach ($configFiles as $conf) {
 
 echo "* Creating INI files".PHP_EOL;
 AirtimeIni::CreateIniFiles();
+echo "* Initializing INI files".PHP_EOL;
+AirtimeIni::MergeConfigFiles($configFiles, $suffix);
 
 AirtimeInstall::InstallPhpCode();
 AirtimeInstall::InstallBinaries();
-
-echo "* Initializing INI files".PHP_EOL;
-
-foreach ($configFiles as $conf) {
-    if (file_exists("$conf$suffix.bak")) {
-
-        if($conf === CONF_FILE_AIRTIME) {
-            // Parse with sections
-            $newSettings = parse_ini_file($conf, true);
-            $oldSettings = parse_ini_file("$conf$suffix.bak", true);
-        }
-        else {
-            $newSettings = AirtimeIni::ReadPythonConfig($conf);
-            $oldSettings = AirtimeIni::ReadPythonConfig("$conf$suffix.bak");
-        }
-
-        $settings = array_keys($newSettings);
-
-        foreach($settings as $section) {
-            if(isset($oldSettings[$section])) {
-                if(is_array($oldSettings[$section])) {
-                    $sectionKeys = array_keys($newSettings[$section]);
-                    foreach($sectionKeys as $sectionKey) {
-                        if(isset($oldSettings[$section][$sectionKey])) {
-                            AirtimeIni::UpdateIniValue($conf, $sectionKey, $oldSettings[$section][$sectionKey]);
-                        }
-                    }
-                }
-                else {
-                    AirtimeIni::UpdateIniValue($conf, $section, $oldSettings[$section]);
-                }
-            }
-        }
-    }
-}
 
 Config::reload_config();
