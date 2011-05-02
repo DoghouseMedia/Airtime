@@ -16,7 +16,7 @@ AirtimeInstall::DbConnect(true);
 
 $version = AirtimeInstall::GetAirtimeVersion();
 
-if($version === false) {
+if (!$version){
     if(AirtimeInstall::DbTableExists('cc_show_rebroadcast') === true) {
         $version = "1.7.0";
     }

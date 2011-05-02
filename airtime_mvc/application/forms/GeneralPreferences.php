@@ -15,7 +15,8 @@ class Application_Form_GeneralPreferences extends Zend_Form_SubForm
             'label'      => 'Station Name:',
             'required'   => true,
             'filters'    => array('StringTrim'),
-            'validators' => array('NotEmpty'),
+            'validators' => array(array('NotEmpty'),
+                                array('regex', false, array('/^[(\x20-\x7F)]+$/', 'messages' => 'Invalid character entered'))),
             'value' => Application_Model_Preference::GetValue("station_name"),
             'decorators' => array(
                 'ViewHelper'
