@@ -189,7 +189,7 @@ class AirtimeIni
         return $values;
     }
 
-    public static MergeConfigFiles($configFiles, $suffix) {
+    public static function MergeConfigFiles($configFiles, $suffix) {
         foreach ($configFiles as $conf) {
             if (file_exists("$conf$suffix.bak")) {
 
