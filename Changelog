@@ -1,3 +1,19 @@
+1.8.1 - May 3, 2011
+  * Fixed issue where an track's progress bar would keep updating, even if
+    the track was no longer playing.
+  * Fixed problem where editing a show would only update some of the show
+    instances.
+  * Fixed an issue related to editing a show that had instances scheduled
+    in the past.
+  * airtime-clean-storage command-line utility should now work properly
+  * Fixed an issue related the "airtime-import" command-line utility
+  * Fixed an issue with the Airtime Debian package overwriting configuration
+    files
+  * Fixed some database install issues on Debian
+  * Fixed an issue with show names and foreign characters causing the show
+    to not start (temporarily disabled allowing the usage of these characters) 
+
+
 1.8.0 - April 19, 2011
   * The biggest feature of this release is the ability to edit shows. You can
     change everything from ‘Name’, ‘Description’, and ‘URL’, to repeat and 
