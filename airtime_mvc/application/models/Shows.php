@@ -1968,7 +1968,7 @@ class Show_DAL {
         global $CC_CONFIG, $CC_DBC;
         
         $sql = "SELECT"
-        ." s.*,"
+        ." s.*"
         ." FROM $CC_CONFIG[showTable] s";
 
         return $CC_DBC->GetAll($sql);
