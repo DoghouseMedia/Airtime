@@ -1963,7 +1963,7 @@ class Show_DAL {
         return $CC_DBC->GetAll($sql);
     }
     
-    public static function GetAllShows()
+    public static function GetAllShowsAndInstances()
     {
         global $CC_CONFIG, $CC_DBC;
         
@@ -1971,6 +1971,17 @@ class Show_DAL {
         ." s.*"
         ." FROM $CC_CONFIG[showTable] s";
 
-        return $CC_DBC->GetAll($sql);
+        $shows = $CC_DBC->GetAll($sql);
+        
+        foreach($shows as $i => $show) {
+        	$sql = "SELECT"
+	        ." si.*"
+	        ." FROM $CC_CONFIG[showInstances] si"
+	        ." WHERE si.show_id = $show[id]";
+	        
+	        $shows[$i]['instances'] = $CC_DBC->GetAll($sql);
+        }
+        
+        return $shows;
     }
 }

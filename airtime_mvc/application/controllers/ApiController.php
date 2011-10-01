@@ -197,27 +197,8 @@ class ApiController extends Zend_Controller_Action
             $this->view->layout()->disableLayout();
             $this->_helper->viewRenderer->setNoRender(true);
 
-            $result = Show_DAL::GetAllShows();
+            $result = Show_DAL::GetAllShowsAndFutureInstances();
 
-            foreach($result as $i => $row) {
-            	$result[$i]['instances'] = array();
-            	
-            	$show = new Show($row['id']);
-            	
-            	foreach($show->getAllFutureInstanceIds() as $showInstanceId) {
-            		$showInstance = new ShowInstance($showInstanceId);
-            		$showInstanceArray = array();
-            		
-            		foreach(get_class_methods($showInstance) as $showInstanceMethod) {
-            			if (substr($showInstanceMethod, 0, 3) == 'get') {
-            				$key = strtolower(substr($showInstanceMethod, 3));
-            				$showInstanceArray[$key] = $showInstance->$showInstanceMethod();
-            			}
-            		}
-            		$result[$i]['instances'][] = $showInstanceArray; 
-            	}
-            }
-            
             header("Content-type: text/javascript");
             echo json_encode($result);
         } else {
