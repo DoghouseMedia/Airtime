@@ -200,8 +200,22 @@ class ApiController extends Zend_Controller_Action
             $result = Show_DAL::GetAllShows();
 
             foreach($result as $i => $row) {
-            	$result[$i]['instances'] = CcShowInstancesQuery::create()
-            		->filterByDbShowId($row['id']);
+            	$result[$i]['instances'] = array();
+            	
+            	$show = new Show($row['id']);
+            	
+            	foreach($show->getAllFutureInstanceIds() as $showInstanceId) {
+            		$showInstance = new ShowInstance($showInstanceId);
+            		$showInstanceArray = array();
+            		
+            		foreach(get_class_methods($showInstance) as $showInstanceMethod) {
+            			if (substr($showInstanceMethod, 0, 3) == 'get') {
+            				$key = strtolower(substr($showInstanceMethod, 3));
+            				$showInstanceArray[$key] = $showInstance->$showInstanceMethod();
+            			}
+            		}
+            		$result[$i]['instances'][] = $showInstanceArray; 
+            	}
             }
             
             header("Content-type: text/javascript");
