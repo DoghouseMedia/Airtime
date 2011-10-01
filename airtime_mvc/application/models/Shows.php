@@ -1962,4 +1962,15 @@ class Show_DAL {
 
         return $CC_DBC->GetAll($sql);
     }
+    
+    public static function GetAllShows()
+    {
+        global $CC_CONFIG, $CC_DBC;
+        
+        $sql = "SELECT"
+        ." s.*,"
+        ." FROM $CC_CONFIG[showTable] s";
+
+        return $CC_DBC->GetAll($sql);
+    }
 }

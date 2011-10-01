@@ -189,6 +189,24 @@ class ApiController extends Zend_Controller_Action
             exit;
         }
     }
+    
+    public function showsAction()
+    {
+        if (Application_Model_Preference::GetAllow3rdPartyApi()){
+            // disable the view and the layout
+            $this->view->layout()->disableLayout();
+            $this->_helper->viewRenderer->setNoRender(true);
+
+            $result = Show_DAL::GetAllShows();
+
+            header("Content-type: text/javascript");
+            echo json_encode($result);
+        } else {
+            header('HTTP/1.0 401 Unauthorized');
+            print 'You are not allowed to access this resource. ';
+            exit;
+        }
+    }
 
     public function scheduleAction()
     {
