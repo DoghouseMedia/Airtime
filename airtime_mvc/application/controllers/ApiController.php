@@ -199,9 +199,10 @@ class ApiController extends Zend_Controller_Action
 
             $result = Show_DAL::GetAllShows();
 
-            foreach($result as $row) {
+            foreach($result as $i => $row) {
             	$show = new Show($row['id']);
             	$row['instances'] = $show->getInstance();
+            	$result[$i] = $row;
             }
             
             header("Content-type: text/javascript");
