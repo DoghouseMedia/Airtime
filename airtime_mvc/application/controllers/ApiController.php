@@ -197,7 +197,9 @@ class ApiController extends Zend_Controller_Action
             $this->view->layout()->disableLayout();
             $this->_helper->viewRenderer->setNoRender(true);
 
-            $result = Show_DAL::GetAllShowsAndInstances();
+            $date = new DateHelper;
+            $timeNow = $date->getTimestamp();
+            $result = Show_DAL::GetAllShowsAndInstances($timeNow);
 
             header("Content-type: text/javascript");
             echo json_encode($result);
