@@ -201,8 +201,7 @@ class ApiController extends Zend_Controller_Action
 
             foreach($result as $i => $row) {
             	$result[$i]['instances'] = CcShowInstancesQuery::create()
-            		->filterByDbShowId($row['id'])
-            		->fetchAll();
+            		->filterByDbShowId($row['id']);
             }
             
             header("Content-type: text/javascript");
