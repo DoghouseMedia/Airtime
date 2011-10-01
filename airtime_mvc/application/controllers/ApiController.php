@@ -199,7 +199,7 @@ class ApiController extends Zend_Controller_Action
 
             $date = new DateHelper;
             $timeNow = $date->getTimestamp();
-            $result = Show_DAL::GetAllShowsAndInstances($timeNow);
+            $result = Show_DAL::GetAllShowsAndFutureInstances($timeNow);
 
             header("Content-type: text/javascript");
             echo json_encode($result);
