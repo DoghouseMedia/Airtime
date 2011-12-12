@@ -1,8 +1,12 @@
-php_value post_max_size 500M
+php_value post_max_size 505M
 php_value upload_max_filesize 500M
+php_value memory_limit 768M
+php_value max_input_time 1200
+php_value max_execution_time 600
+
 php_value request_order "GPC"
 php_value session.gc_probability 0
-php_value date.timezone "America/Toronto"
+php_value date.timezone "Australia/Perth"
 php_value phar.readonly Off
 
 RewriteEngine On
