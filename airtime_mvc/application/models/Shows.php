@@ -1978,10 +1978,10 @@ class Show_DAL {
 	        ." si.*"
 	        ." FROM $CC_CONFIG[showInstances] si"
 	        ." WHERE si.show_id = $show[id]"
-	        ." AND si.starts >= TIMESTAMP '$timeNow'";
+	        ." AND si.starts >= TIMESTAMP '$timeFrom'";
 	        
 	        if ($timeTo) {
-	        	$sqlInstances .= " AND si.ends <= TIMESTAMP '$timeNow'"; 
+	        	$sqlInstances .= " AND si.ends <= TIMESTAMP '$timeTo'"; 
 	        }
 	        
 	        $sqlDays = "SELECT"
