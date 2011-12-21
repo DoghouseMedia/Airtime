@@ -197,9 +197,13 @@ class ApiController extends Zend_Controller_Action
             $this->view->layout()->disableLayout();
             $this->_helper->viewRenderer->setNoRender(true);
 
-            $date = new DateHelper;
-            $timeNow = $date->getTimestamp();
-            $result = Show_DAL::GetAllShowsAndFutureInstances($timeNow);
+            $timeNow = time();
+            $timeTo = $timeNow + (60*60*24*10); // 10 days
+            
+            $result = Show_DAL::GetAllShowsAndFutureInstances(
+            	date('Y-m-d H:i:s', $timeNow),
+            	date('Y-m-d H:i:s', $timeTo)
+            );
 
             header("Content-type: text/javascript");
             echo json_encode($result);

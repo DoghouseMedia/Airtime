@@ -1963,7 +1963,7 @@ class Show_DAL {
         return $CC_DBC->GetAll($sql);
     }
     
-    public static function GetAllShowsAndFutureInstances($timeNow)
+    public static function GetAllShowsAndFutureInstances($timeFrom, $timeTo=null)
     {
         global $CC_CONFIG, $CC_DBC;
         
@@ -1979,6 +1979,10 @@ class Show_DAL {
 	        ." FROM $CC_CONFIG[showInstances] si"
 	        ." WHERE si.show_id = $show[id]"
 	        ." AND si.starts >= TIMESTAMP '$timeNow'";
+	        
+	        if ($timeTo) {
+	        	$sqlInstances .= " AND si.ends <= TIMESTAMP '$timeNow'"; 
+	        }
 	        
 	        $sqlDays = "SELECT"
 	        ." sd.*"
