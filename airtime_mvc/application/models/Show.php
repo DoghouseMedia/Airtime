@@ -1706,4 +1706,37 @@ class Application_Model_Show {
 
         return $assocArray;
     }
+    
+    public static function GetAllShowsAndFutureInstances($timeFrom, $timeTo=null)
+    {
+    	global $CC_CONFIG, $CC_DBC;
+    
+    	$sql = "SELECT"
+	    	." s.*"
+	    	." FROM $CC_CONFIG[showTable] s";
+    
+    	$shows = $CC_DBC->GetAll($sql);
+    
+    	foreach($shows as $i => $show) {
+	    	$sqlInstances = "SELECT"
+	    		." si.*"
+	    		." FROM $CC_CONFIG[showInstances] si"
+	    		." WHERE si.show_id = $show[id]"
+	    		." AND si.starts >= TIMESTAMP '$timeFrom'";
+	    
+    		if ($timeTo) {
+	    		$sqlInstances .= " AND si.ends <= TIMESTAMP '$timeTo'";
+	    	}
+	    
+	    	$sqlDays = "SELECT"
+		    	." sd.*"
+		    	." FROM $CC_CONFIG[showDays] sd"
+		    	." WHERE sd.show_id = $show[id]";
+	    
+	    	$shows[$i]['instances'] = $CC_DBC->GetAll($sqlInstances);
+	    	$shows[$i]['days'] = $CC_DBC->GetAll($sqlDays);
+	    }
+	    
+	    return $shows;
+    }
 }
